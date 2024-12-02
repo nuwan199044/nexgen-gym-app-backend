@@ -43,7 +43,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public UserProfileDTO updateUserProfile(UserProfileDTO userProfileDTO) {
-        UserProfile userProfile = userProfileRepository.findUserByEmail(userProfileDTO.getEmail())
+        UserProfile userProfile = userProfileRepository.findById(userProfileDTO.getUserProfileId())
                 .orElseThrow(() -> new UserProfileException(ResponseCode.USER_PROFILE_NOT_FOUND));
 
         userProfile.setFirstName(userProfileDTO.getFirstName());

@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserProfileDTO {
 
+    @JsonProperty("user_profile_id")
+    private Long userProfileId;
+
     @JsonProperty("address")
     private String address;
 
