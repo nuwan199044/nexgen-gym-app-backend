@@ -1,6 +1,5 @@
-package com.enzith.nexgen.dto;
+package com.enzith.nexgen.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,8 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserProfileDTO {
+public class UserProfileRequest {
 
     @JsonProperty("user_profile_id")
     private Long userProfileId;

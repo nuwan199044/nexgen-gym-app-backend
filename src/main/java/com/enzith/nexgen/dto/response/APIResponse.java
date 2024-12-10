@@ -1,4 +1,4 @@
-package com.enzith.nexgen.dto;
+package com.enzith.nexgen.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

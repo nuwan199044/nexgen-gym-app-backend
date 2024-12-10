@@ -1,4 +1,4 @@
-package com.enzith.nexgen.dto;
+package com.enzith.nexgen.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MembershipTypeDTO {
+public class MembershipTypeResponse {
     
     @JsonProperty("membership_type_id")
     private Long membershipTypeId;

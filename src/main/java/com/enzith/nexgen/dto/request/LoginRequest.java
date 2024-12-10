@@ -1,4 +1,4 @@
-package com.enzith.nexgen.dto;
+package com.enzith.nexgen.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
