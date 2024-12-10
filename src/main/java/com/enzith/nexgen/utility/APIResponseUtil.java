@@ -1,6 +1,6 @@
 package com.enzith.nexgen.utility;
 
-import com.enzith.nexgen.dto.APIResponse;
+import com.enzith.nexgen.dto.response.APIResponse;
 import com.enzith.nexgen.enums.ResponseCode;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

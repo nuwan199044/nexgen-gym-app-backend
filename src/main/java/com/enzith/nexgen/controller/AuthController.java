@@ -1,8 +1,8 @@
 package com.enzith.nexgen.controller;
 
-import com.enzith.nexgen.dto.APIResponse;
-import com.enzith.nexgen.dto.LoginRequest;
-import com.enzith.nexgen.dto.LoginResponse;
+import com.enzith.nexgen.dto.response.APIResponse;
+import com.enzith.nexgen.dto.request.LoginRequest;
+import com.enzith.nexgen.dto.response.LoginResponse;
 import com.enzith.nexgen.enums.ResponseCode;
 import com.enzith.nexgen.service.AuthService;
 import com.enzith.nexgen.utility.APIResponseUtil;

@@ -1,7 +1,8 @@
 package com.enzith.nexgen.controller;
 
-import com.enzith.nexgen.dto.APIResponse;
-import com.enzith.nexgen.dto.UserProfileDTO;
+import com.enzith.nexgen.dto.response.APIResponse;
+import com.enzith.nexgen.dto.request.UserProfileRequest;
+import com.enzith.nexgen.dto.response.UserProfileResponse;
 import com.enzith.nexgen.enums.ResponseCode;
 import com.enzith.nexgen.service.UserProfileService;
 import com.enzith.nexgen.utility.APIResponseUtil;
@@ -26,20 +27,20 @@ public class UserProfileController {
     private final UserProfileService userProfileService;
 
     @PostMapping
-    public ResponseEntity<APIResponse<UserProfileDTO>> createUserProfile(@RequestBody UserProfileDTO userProfileDTO) {
+    public ResponseEntity<APIResponse<UserProfileResponse>> createUserProfile(@RequestBody UserProfileRequest userProfileRequest) {
         return new ResponseEntity<>(
                 APIResponseUtil.createResponse(
                         ResponseCode.USER_PROFILE_CREATED_SUCCESS,
-                        userProfileService.createUserProfile(userProfileDTO)
+                        userProfileService.createUserProfile(userProfileRequest)
                 ), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<APIResponse<UserProfileDTO>> updateUserProfile(@RequestBody UserProfileDTO userProfileDTO) {
+    public ResponseEntity<APIResponse<UserProfileResponse>> updateUserProfile(@RequestBody UserProfileRequest userProfileRequest) {
         return new ResponseEntity<>(
                 APIResponseUtil.createResponse(
                         ResponseCode.USER_PROFILE_UPDATED_SUCCESS,
-                        userProfileService.updateUserProfile(userProfileDTO)
+                        userProfileService.updateUserProfile(userProfileRequest)
                 ), HttpStatus.OK);
     }
 
@@ -53,7 +54,7 @@ public class UserProfileController {
     }
 
     @GetMapping("/find-by-id")
-    public ResponseEntity<APIResponse<UserProfileDTO>> findUserProfileById(@RequestParam(value = "user_profile_id") Long userProfileId) {
+    public ResponseEntity<APIResponse<UserProfileResponse>> findUserProfileById(@RequestParam(value = "user_profile_id") Long userProfileId) {
         return new ResponseEntity<>(
                 APIResponseUtil.createResponse(
                         ResponseCode.USER_PROFILE_FIND_SUCCESS,

@@ -1,7 +1,8 @@
 package com.enzith.nexgen.controller;
 
-import com.enzith.nexgen.dto.APIResponse;
-import com.enzith.nexgen.dto.MembershipTypeDTO;
+import com.enzith.nexgen.dto.request.MembershipTypeRequest;
+import com.enzith.nexgen.dto.response.APIResponse;
+import com.enzith.nexgen.dto.response.MembershipTypeResponse;
 import com.enzith.nexgen.enums.ResponseCode;
 import com.enzith.nexgen.service.MembershipTypeService;
 import com.enzith.nexgen.utility.APIResponseUtil;
@@ -26,20 +27,20 @@ public class MembershipTypeController {
     private final MembershipTypeService membershipTypeService;
 
     @PostMapping
-    public ResponseEntity<APIResponse<MembershipTypeDTO>> createMembershipType(@RequestBody MembershipTypeDTO membershipTypeDTO) {
+    public ResponseEntity<APIResponse<MembershipTypeResponse>> createMembershipType(@RequestBody MembershipTypeRequest membershipTypeRequest) {
         return new ResponseEntity<>(
                 APIResponseUtil.createResponse(
                         ResponseCode.MEMBERSHIP_TYPE_CREATED_SUCCESS,
-                        membershipTypeService.createMembershipType(membershipTypeDTO)
+                        membershipTypeService.createMembershipType(membershipTypeRequest)
                 ), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<APIResponse<MembershipTypeDTO>> updateMembershipType(@RequestBody MembershipTypeDTO membershipTypeDTO) {
+    public ResponseEntity<APIResponse<MembershipTypeResponse>> updateMembershipType(@RequestBody MembershipTypeRequest membershipTypeRequest) {
         return new ResponseEntity<>(
                 APIResponseUtil.createResponse(
                         ResponseCode.MEMBERSHIP_TYPE_UPDATED_SUCCESS,
-                        membershipTypeService.updateMembershipType(membershipTypeDTO)
+                        membershipTypeService.updateMembershipType(membershipTypeRequest)
                 ), HttpStatus.OK);
     }
 
@@ -51,7 +52,7 @@ public class MembershipTypeController {
     }
 
     @GetMapping("/find-by-id")
-    public ResponseEntity<APIResponse<MembershipTypeDTO>> findMembershipTypeById(@RequestParam(value = "membership_type_id") Long membershipTypeId) {
+    public ResponseEntity<APIResponse<MembershipTypeResponse>> findMembershipTypeById(@RequestParam(value = "membership_type_id") Long membershipTypeId) {
         return new ResponseEntity<>(
                 APIResponseUtil.createResponse(
                         ResponseCode.MEMBERSHIP_TYPE_FIND_SUCCESS,
