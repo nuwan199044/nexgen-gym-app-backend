@@ -1,12 +1,13 @@
 package com.enzith.nexgen.service;
 
-import com.enzith.nexgen.dto.MembershipTypeDTO;
+import com.enzith.nexgen.dto.request.MembershipTypeRequest;
+import com.enzith.nexgen.dto.response.MembershipTypeResponse;
 
 import java.util.Map;
 
 public interface MembershipTypeService {
-    MembershipTypeDTO createMembershipType(MembershipTypeDTO membershipTypeDTO);
-    MembershipTypeDTO updateMembershipType(MembershipTypeDTO membershipTypeDTO);
-    MembershipTypeDTO findMembershipTypeById(Long membershipTypeId);
+    MembershipTypeResponse createMembershipType(MembershipTypeRequest membershipTypeResponse);
+    MembershipTypeResponse updateMembershipType(MembershipTypeRequest membershipTypeResponse);
+    MembershipTypeResponse findMembershipTypeById(Long membershipTypeId);
     Map<String, Object> findAllMembershipTypes(Integer currentPage, Integer pageSize);
 }
