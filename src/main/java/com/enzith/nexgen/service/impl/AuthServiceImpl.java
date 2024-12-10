@@ -1,9 +1,9 @@
 package com.enzith.nexgen.service.impl;
 
 import com.enzith.nexgen.config.JwtProvider;
-import com.enzith.nexgen.dto.AccessToken;
-import com.enzith.nexgen.dto.LoginRequest;
-import com.enzith.nexgen.dto.LoginResponse;
+import com.enzith.nexgen.dto.response.AccessToken;
+import com.enzith.nexgen.dto.request.LoginRequest;
+import com.enzith.nexgen.dto.response.LoginResponse;
 import com.enzith.nexgen.enums.ResponseCode;
 import com.enzith.nexgen.service.AuthService;
 import lombok.RequiredArgsConstructor;
