@@ -31,8 +31,8 @@ public class MemberSpecification implements Specification<Member> {
             andPredicates.add(firstNamePredicate);
         }
         if(StringUtils.isNotBlank(criteria.getPhoneNo())) {
-            Predicate lastNamePredicate = criteriaBuilder.like(root.get("phoneNo"), "%"+criteria.getPhoneNo()+"%");
-            andPredicates.add(lastNamePredicate);
+            Predicate phoneNoPredicate = criteriaBuilder.like(root.get("phoneNo"), "%"+criteria.getPhoneNo()+"%");
+            andPredicates.add(phoneNoPredicate);
         }
         if (andPredicates.isEmpty()) {
             return criteriaBuilder.conjunction();

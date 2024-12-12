@@ -5,7 +5,7 @@ import com.enzith.nexgen.dto.response.TrainerResponse;
 
 import java.util.Map;
 
-public interface PersonalTrainerService {
+public interface TrainerService {
     String createTrainer(TrainerRequest trainerRequest);
     String updateTrainer(TrainerRequest trainerRequest);
     TrainerResponse findTrainerById(Long trainerId);

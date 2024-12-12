@@ -7,7 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.Optional;
 
-public interface PersonalTrainerRepository extends JpaSpecificationExecutor<Trainer>,
+public interface TrainerRepository extends JpaSpecificationExecutor<Trainer>,
         PagingAndSortingRepository<Trainer, Long>, JpaRepository<Trainer, Long> {
     Optional<Trainer> findByPhoneNo1(String phoneNo1);
 }

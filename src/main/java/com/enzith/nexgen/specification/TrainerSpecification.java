@@ -31,8 +31,8 @@ public class TrainerSpecification implements Specification<Trainer> {
             andPredicates.add(firstNamePredicate);
         }
         if(StringUtils.isNotBlank(criteria.getPhoneNo1())) {
-            Predicate lastNamePredicate = criteriaBuilder.like(root.get("phoneNo1"), "%"+criteria.getPhoneNo1()+"%");
-            andPredicates.add(lastNamePredicate);
+            Predicate phoneNo1Predicate = criteriaBuilder.like(root.get("phoneNo1"), "%"+criteria.getPhoneNo1()+"%");
+            andPredicates.add(phoneNo1Predicate);
         }
         if (andPredicates.isEmpty()) {
             return criteriaBuilder.conjunction();

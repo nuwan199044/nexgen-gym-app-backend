@@ -4,7 +4,7 @@ import com.enzith.nexgen.dto.request.TrainerRequest;
 import com.enzith.nexgen.dto.response.APIResponse;
 import com.enzith.nexgen.dto.response.TrainerResponse;
 import com.enzith.nexgen.enums.ResponseCode;
-import com.enzith.nexgen.service.PersonalTrainerService;
+import com.enzith.nexgen.service.TrainerService;
 import com.enzith.nexgen.utility.APIResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,16 +22,16 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/personal-trainer")
 @RequiredArgsConstructor
-public class PersonalTrainerController {
+public class TrainerController {
 
-    private final PersonalTrainerService personalTrainerService;
+    private final TrainerService trainerService;
 
     @PostMapping
     public ResponseEntity<APIResponse<String>> createTrainer(@RequestBody TrainerRequest trainerRequest) {
         return new ResponseEntity<>(
                 APIResponseUtil.createResponse(
                         ResponseCode.TRAINER_CREATED_SUCCESS,
-                        personalTrainerService.createTrainer(trainerRequest)
+                        trainerService.createTrainer(trainerRequest)
                 ), HttpStatus.CREATED);
     }
 
@@ -40,7 +40,7 @@ public class PersonalTrainerController {
         return new ResponseEntity<>(
                 APIResponseUtil.createResponse(
                         ResponseCode.TRAINER_UPDATED_SUCCESS,
-                        personalTrainerService.updateTrainer(trainerRequest)
+                        trainerService.updateTrainer(trainerRequest)
                 ), HttpStatus.OK);
     }
 
@@ -50,7 +50,7 @@ public class PersonalTrainerController {
             @RequestParam(value = "phone_no_1", required = false) String phoneNo1,
             @RequestParam(value = "current_page") Integer currentPage,
             @RequestParam(value = "page_size") Integer pageSize) {
-        return new ResponseEntity<>(personalTrainerService.findAllTrainers(firstName, phoneNo1, currentPage, pageSize), HttpStatus.OK);
+        return new ResponseEntity<>(trainerService.findAllTrainers(firstName, phoneNo1, currentPage, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/find-by-id")
@@ -58,7 +58,7 @@ public class PersonalTrainerController {
         return new ResponseEntity<>(
                 APIResponseUtil.createResponse(
                         ResponseCode.TRAINER_FIND_SUCCESS,
-                        personalTrainerService.findTrainerById(trainerId)
+                        trainerService.findTrainerById(trainerId)
                 ), HttpStatus.OK);
     }
 }
