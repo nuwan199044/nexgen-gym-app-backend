@@ -24,6 +24,7 @@ public enum ResponseCode {
     USER_PROFILE_CREATED_SUCCESS(400, "User profile is created successfully"),
     USER_PROFILE_UPDATED_SUCCESS(400, "User profile is updated successfully"),
     USER_PROFILE_FIND_SUCCESS(400, "User profile is fetched successfully"),
+    TRAINER_FIND_SUCCESS(400, "Trainer is fetched successfully"),
     MEMBERSHIP_TYPE_CREATED_SUCCESS(400, "Membership type is created successfully"),
     MEMBER_CREATED_SUCCESS(400, "Member is created successfully"),
     TRAINER_CREATED_SUCCESS(400, "Trainer is created successfully"),
