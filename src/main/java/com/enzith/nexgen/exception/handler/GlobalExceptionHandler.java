@@ -3,8 +3,10 @@ package com.enzith.nexgen.exception.handler;
 import com.enzith.nexgen.dto.response.ErrorDetailResponse;
 import com.enzith.nexgen.enums.ResponseCode;
 import com.enzith.nexgen.exception.MemberException;
+import com.enzith.nexgen.exception.MemberTrainerSessionException;
 import com.enzith.nexgen.exception.MembershipTypeException;
 import com.enzith.nexgen.exception.TrainerException;
+import com.enzith.nexgen.exception.TrainerPackageException;
 import com.enzith.nexgen.exception.UserProfileException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -67,6 +69,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {MembershipTypeException.class})
     public ResponseEntity<Object> handleMembershipTypeException(MembershipTypeException ex, WebRequest request) {
+        log.error(ex.getMessage(), ex);
+        return handleExceptionInternal(
+                ex,
+                getErrorDetailResponse(ex.getError(), request, null),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    @ExceptionHandler(value = {TrainerPackageException.class})
+    public ResponseEntity<Object> handleTrainerPackageException(TrainerPackageException ex, WebRequest request) {
+        log.error(ex.getMessage(), ex);
+        return handleExceptionInternal(
+                ex,
+                getErrorDetailResponse(ex.getError(), request, null),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    @ExceptionHandler(value = {MemberTrainerSessionException.class})
+    public ResponseEntity<Object> handleMemberTrainerSessionException(MemberTrainerSessionException ex, WebRequest request) {
         log.error(ex.getMessage(), ex);
         return handleExceptionInternal(
                 ex,
