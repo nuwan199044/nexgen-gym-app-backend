@@ -5,6 +5,7 @@ import com.enzith.nexgen.enums.ResponseCode;
 import com.enzith.nexgen.exception.MemberException;
 import com.enzith.nexgen.exception.MemberTrainerSessionException;
 import com.enzith.nexgen.exception.MembershipTypeException;
+import com.enzith.nexgen.exception.PersonalTrainingException;
 import com.enzith.nexgen.exception.TrainerException;
 import com.enzith.nexgen.exception.TrainerPackageException;
 import com.enzith.nexgen.exception.UserProfileException;
@@ -93,6 +94,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {MemberTrainerSessionException.class})
     public ResponseEntity<Object> handleMemberTrainerSessionException(MemberTrainerSessionException ex, WebRequest request) {
+        log.error(ex.getMessage(), ex);
+        return handleExceptionInternal(
+                ex,
+                getErrorDetailResponse(ex.getError(), request, null),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    @ExceptionHandler(value = {PersonalTrainingException.class})
+    public ResponseEntity<Object> handlePersonalTrainingException(PersonalTrainingException ex, WebRequest request) {
         log.error(ex.getMessage(), ex);
         return handleExceptionInternal(
                 ex,

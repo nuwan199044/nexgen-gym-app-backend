@@ -48,6 +48,9 @@ public class MemberTrainerSession {
     @Column(name = "purchase_date")
     private LocalDate purchaseDate;
 
+    @Column(name = "expiry_date")
+    private LocalDate expiryDate;
+
     @Column(name = "remaining_sessions")
     private Integer remainingSessions;
 
