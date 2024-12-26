@@ -2,6 +2,7 @@ package com.enzith.nexgen.service.impl;
 
 import com.enzith.nexgen.criteria.PaginationCriteria;
 import com.enzith.nexgen.dto.request.MemberMembershipRequest;
+import com.enzith.nexgen.dto.response.InstallmentResponse;
 import com.enzith.nexgen.dto.response.MemberMembershipResponse;
 import com.enzith.nexgen.entity.Installment;
 import com.enzith.nexgen.entity.Member;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -76,12 +78,36 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
 
     @Override
     public MemberMembershipResponse renewMembership(MemberMembershipRequest memberMembershipRequest) {
-        return null;
+        Member existingMember = memberRepository.findById(memberMembershipRequest.getMemberId())
+                .orElseThrow(() -> new MemberException(ResponseCode.MEMBER_NOT_FOUND));
+        MembershipType newMembershipType = validateMembershipType(memberMembershipRequest.getMembershipTypeId());
+        MemberMembership memberMembership = renewMembershipAndInstallments(existingMember, memberMembershipRequest, newMembershipType);
+        return modelMapper.map(memberMembership, MemberMembershipResponse.class);
     }
 
     @Override
     public MemberMembershipResponse findMembershipById(Long membershipId) {
         return modelMapper.map(memberMembershipRepository.findById(membershipId), MemberMembershipResponse.class);
+    }
+
+    @Override
+    public MemberMembershipResponse findMembershipForRenewal(Long membershipId) {
+        return memberMembershipRepository.findById(membershipId)
+                .map(this::mapToMembershipResponseForRenewal)
+                .orElseThrow(() -> new IllegalArgumentException("Membership with ID " + membershipId + " not found"));
+    }
+
+    private MemberMembershipResponse mapToMembershipResponseForRenewal(MemberMembership membership) {
+        MemberMembershipResponse response = modelMapper.map(membership, MemberMembershipResponse.class);
+
+        if (!MembershipStatus.EXPIRED.name().equals(response.getStatus())) {
+            LocalDate startDate = response.getEndDate().plusDays(1);
+            LocalDate endDate = startDate.plusDays(response.getMembershipType().getDurationInDays());
+            response.setStartDate(startDate);
+            response.setEndDate(endDate);
+        }
+
+        return response;
     }
 
     @Override
@@ -102,9 +128,23 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
                 modelMapper.map(membership, MemberMembershipResponse.class)));
     }
 
+    @Override
+    public List<InstallmentResponse> findAllMembershipPaymentInstallments(Long memberMembershipId) {
+        MemberMembership memberMembership = validateMembership(memberMembershipId);
+        return installmentRepository.findByMemberMembership(memberMembership)
+                .stream()
+                .map(installment -> modelMapper.map(installment, InstallmentResponse.class))
+                .toList();
+    }
+
     private MembershipType validateMembershipType(Long membershipTypeId) {
         return membershipTypeRepository.findById(membershipTypeId)
                 .orElseThrow(() -> new MemberException(ResponseCode.MEMBERSHIP_TYPE_NOT_FOUND));
+    }
+
+    private MemberMembership validateMembership(Long membershipId) {
+        return memberMembershipRepository.findById(membershipId)
+                .orElseThrow(() -> new MemberException(ResponseCode.MEMBERSHIP_NOT_FOUND));
     }
 
     private MemberMembership getMemberMembership(Member existingMember, MemberMembershipRequest memberMembershipRequest, MembershipType membershipType) {
@@ -122,6 +162,13 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
                         membershipType.getIsInstallmentsAllowed() ? memberMembershipRequest.getIsPaidInInstallments() : false)
                 .installmentCount(memberMembershipRequest.getInstallmentCount())
                 .build();
+    }
+
+    private MemberMembership getRenewalMembership(Member existingMember, MemberMembershipRequest memberMembershipRequest, MembershipType membershipType) {
+        MemberMembership memberMembership = getMemberMembership(existingMember, memberMembershipRequest, membershipType);
+        memberMembership.setStartDate(memberMembershipRequest.getStartDate());
+        memberMembership.setEndDate(memberMembershipRequest.getEndDate());
+        return memberMembership;
     }
 
     private boolean shouldCreateInstallments(MemberMembershipRequest memberMembershipRequest, MembershipType membershipType) {
@@ -182,8 +229,22 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
         memberMembershipRepository.save(memberMembership);
 
         if (shouldCreateInstallments(memberMembershipRequest, membershipType)) {
-            List<Installment> installments = generateInstallments(member, memberMembership);
-            installmentRepository.saveAll(installments);
+            createInstallments(member, memberMembership);
         }
+    }
+
+    private MemberMembership renewMembershipAndInstallments(Member member, MemberMembershipRequest memberMembershipRequest, MembershipType membershipType) {
+        MemberMembership memberMembership = getRenewalMembership(member, memberMembershipRequest, membershipType);
+        memberMembershipRepository.save(memberMembership);
+
+        if (shouldCreateInstallments(memberMembershipRequest, membershipType)) {
+            createInstallments(member, memberMembership);
+        }
+        return memberMembership;
+    }
+
+    private void createInstallments(Member member, MemberMembership memberMembership) {
+        List<Installment> installments = generateInstallments(member, memberMembership);
+        installmentRepository.saveAll(installments);
     }
 }

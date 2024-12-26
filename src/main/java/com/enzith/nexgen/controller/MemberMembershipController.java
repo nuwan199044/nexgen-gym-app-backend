@@ -2,6 +2,7 @@ package com.enzith.nexgen.controller;
 
 import com.enzith.nexgen.dto.response.APIResponse;
 import com.enzith.nexgen.dto.request.MemberMembershipRequest;
+import com.enzith.nexgen.dto.response.InstallmentResponse;
 import com.enzith.nexgen.dto.response.MemberMembershipResponse;
 import com.enzith.nexgen.enums.ResponseCode;
 import com.enzith.nexgen.service.MemberMembershipService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -44,6 +46,15 @@ public class MemberMembershipController {
                 ), HttpStatus.OK);
     }
 
+    @PutMapping("/renew")
+    public ResponseEntity<APIResponse<MemberMembershipResponse>> renewMembership(@RequestBody MemberMembershipRequest membershipDTO) {
+        return new ResponseEntity<>(
+                APIResponseUtil.createResponse(
+                        ResponseCode.MEMBERSHIP_UPDATED_SUCCESS,
+                        memberMembershipService.renewMembership(membershipDTO)
+                ), HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<Map<String, Object>> findAllMemberships(
             @RequestParam(value = "first_name", required = false) String firstName,
@@ -53,12 +64,27 @@ public class MemberMembershipController {
         return new ResponseEntity<>(memberMembershipService.findAllMemberships(firstName, phoneNo, currentPage, pageSize), HttpStatus.OK);
     }
 
+    @GetMapping("/payment/installment")
+    public ResponseEntity<List<InstallmentResponse>> findAllMembershipPaymentInstallments(
+            @RequestParam(value = "member_membership_id") Long memberMembershipId) {
+        return new ResponseEntity<>(memberMembershipService.findAllMembershipPaymentInstallments(memberMembershipId), HttpStatus.OK);
+    }
+
     @GetMapping("/find-by-id")
     public ResponseEntity<APIResponse<MemberMembershipResponse>> findMembershipById(@RequestParam(value = "membership_id") Long membershipId) {
         return new ResponseEntity<>(
                 APIResponseUtil.createResponse(
                         ResponseCode.MEMBERSHIP_FIND_SUCCESS,
                         memberMembershipService.findMembershipById(membershipId)
+                ), HttpStatus.OK);
+    }
+
+    @GetMapping("/find-for-renewal")
+    public ResponseEntity<APIResponse<MemberMembershipResponse>> findMembershipForRenewal(@RequestParam(value = "membership_id") Long membershipId) {
+        return new ResponseEntity<>(
+                APIResponseUtil.createResponse(
+                        ResponseCode.MEMBERSHIP_FIND_SUCCESS,
+                        memberMembershipService.findMembershipForRenewal(membershipId)
                 ), HttpStatus.OK);
     }
 

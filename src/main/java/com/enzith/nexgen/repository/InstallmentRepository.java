@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface InstallmentRepository extends JpaRepository<Installment, Long> {
     List<Installment> findByMemberAndMemberMembership(Member member, MemberMembership memberMembership);
+    List<Installment> findByMemberMembership(MemberMembership memberMembership);
 }
