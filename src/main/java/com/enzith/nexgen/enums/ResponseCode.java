@@ -72,6 +72,7 @@ public enum ResponseCode {
     MEMBERSHIP_TYPE_UPDATED_SUCCESS(200, "Membership type is updated successfully"),
     MEMBERSHIP_UPDATED_SUCCESS(200, "Membership is updated successfully"),
     MEMBERSHIP_TYPE_FIND_SUCCESS(200, "Membership type is fetched successfully"),
+    MEMBERSHIP_FIND_SUCCESS(200, "Membership is fetched successfully"),
 
     // Trainer Package Success
     TRAINER_PACKAGE_FIND_SUCCESS(200, "Trainer package is fetched successfully"),

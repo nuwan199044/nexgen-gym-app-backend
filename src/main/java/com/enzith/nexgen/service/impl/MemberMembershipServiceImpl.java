@@ -75,6 +75,16 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
     }
 
     @Override
+    public MemberMembershipResponse renewMembership(MemberMembershipRequest memberMembershipRequest) {
+        return null;
+    }
+
+    @Override
+    public MemberMembershipResponse findMembershipById(Long membershipId) {
+        return modelMapper.map(memberMembershipRepository.findById(membershipId), MemberMembershipResponse.class);
+    }
+
+    @Override
     public Map<String, Object> findAllMemberships(String firstName, String phoneNo, Integer currentPage, Integer pageSize) {
         PaginationCriteria paginationCriteria = PaginationCriteria.builder()
                 .currentPage(currentPage)

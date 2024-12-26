@@ -2,6 +2,7 @@ package com.enzith.nexgen.controller;
 
 import com.enzith.nexgen.dto.response.APIResponse;
 import com.enzith.nexgen.dto.request.MemberMembershipRequest;
+import com.enzith.nexgen.dto.response.MemberMembershipResponse;
 import com.enzith.nexgen.enums.ResponseCode;
 import com.enzith.nexgen.service.MemberMembershipService;
 import com.enzith.nexgen.utility.APIResponseUtil;
@@ -50,6 +51,15 @@ public class MemberMembershipController {
             @RequestParam(value = "current_page") Integer currentPage,
             @RequestParam(value = "page_size") Integer pageSize) {
         return new ResponseEntity<>(memberMembershipService.findAllMemberships(firstName, phoneNo, currentPage, pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/find-by-id")
+    public ResponseEntity<APIResponse<MemberMembershipResponse>> findMembershipById(@RequestParam(value = "membership_id") Long membershipId) {
+        return new ResponseEntity<>(
+                APIResponseUtil.createResponse(
+                        ResponseCode.MEMBERSHIP_FIND_SUCCESS,
+                        memberMembershipService.findMembershipById(membershipId)
+                ), HttpStatus.OK);
     }
 
 }
