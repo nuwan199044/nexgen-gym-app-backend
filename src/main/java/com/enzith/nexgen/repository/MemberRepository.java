@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface MemberRepository extends JpaSpecificationExecutor<Member>,
         PagingAndSortingRepository<Member, Long>, JpaRepository<Member, Long> {
     Optional<Member> findMemberByEmail(String email);
+    Optional<Member> findByFirstNameContainingIgnoreCaseOrPhoneNoContaining(String firstName, String phone);
 
 }

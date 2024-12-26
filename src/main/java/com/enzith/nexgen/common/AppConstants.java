@@ -8,7 +8,7 @@ public class AppConstants {
 
     public static final String SECRET_KEY = "abcedefgrqrqrwtwtwueueyryrootpplffkfjfhfhfhhdhdgdfdncncnfkfkflggkhopmmancbfsewt";
     public static final String JWT_HEADER = "Authorization";
-    public static final long EXPIRATION_TIME_MILLIS = 1200L; // 20 minutes
+    public static final long EXPIRATION_TIME_MILLIS = 36000L; // 20 minutes
     public static final String EMAIL_CLAIM = "email";
     public static final String AUTHORITIES_CLAIM = "authorities";
     public static final String ISSUED_AT = "iat";

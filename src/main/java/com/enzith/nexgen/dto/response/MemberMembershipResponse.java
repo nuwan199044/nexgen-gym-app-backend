@@ -1,5 +1,6 @@
 package com.enzith.nexgen.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,9 @@ public class MemberMembershipResponse {
 
     @JsonProperty("membership_type")
     private MembershipTypeResponse membershipType;
+
+    @JsonProperty("member")
+    private MemberResponse member;
 
     @JsonProperty("start_date")
     private LocalDate startDate;

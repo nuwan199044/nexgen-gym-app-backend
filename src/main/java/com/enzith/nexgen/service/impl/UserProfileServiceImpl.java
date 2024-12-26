@@ -81,6 +81,6 @@ public class UserProfileServiceImpl implements UserProfileService {
 
         Pageable pageable = PaginationUtils.getPage(paginationCriteria);
         Page<UserProfile> userProfiles = userProfileRepository.findAll(new UserSpecification(criteria), pageable);
-        return PaginationUtils.convertToPagination(userProfiles.map(userProfile -> modelMapper.map(userProfile, UserProfileRequest.class)));
+        return PaginationUtils.convertToPagination(userProfiles.map(userProfile -> modelMapper.map(userProfile, UserProfileResponse.class)));
     }
 }

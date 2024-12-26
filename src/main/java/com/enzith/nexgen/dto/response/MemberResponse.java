@@ -1,6 +1,7 @@
 package com.enzith.nexgen.dto.response;
 
 import com.enzith.nexgen.enums.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -60,8 +61,10 @@ public class MemberResponse {
     private String createdBy;
 
     @JsonProperty("member_membership")
+    @JsonBackReference
     private List<MemberMembershipResponse> memberMemberships;
 
     @JsonProperty("installment")
+    @JsonBackReference
     private List<InstallmentResponse> installments;
 }

@@ -47,5 +47,5 @@ public class UserProfileResponse {
     private String password;
 
     @JsonProperty("user_role_id")
-    private Integer userRoleId;
+    private UserRoleResponse userRole;
 }

@@ -31,9 +31,15 @@ public enum ResponseCode {
     MEMBERSHIP_TYPE_NOT_FOUND(400, "Membership type not found"),
     MEMBERSHIP_NOT_FOUND(400, "Membership not found"),
 
+    // Member Membership Errors
+    MEMBER_MEMBERSHIP_NOT_FOUND(400, "Member Membership not found"),
+
     // Session and Training Errors
     PERSONAL_TRAINING_NOT_FOUND(400, "Personal training not found"),
     MEMBER_TRAINING_SESSION_NOT_FOUND(400, "Member training session not found"),
+
+    //Installment Errors
+    INSTALLMENT_NOT_FOUND(400, "Installment not found"),
 
     // Package Errors
     TRAINER_PACKAGE_NOT_FOUND(400, "Trainer package not found"),
@@ -76,6 +82,10 @@ public enum ResponseCode {
     MEMBER_TRAINING_SESSION_CREATED_SUCCESS(200, "Member training session is created successfully"),
     MEMBER_TRAINING_SESSION_UPDATED_SUCCESS(200, "Member training session is updated successfully"),
     PERSONAL_TRAINING_SESSION_UPDATED_SUCCESS(200, "Personal training session is updated successfully"),
+
+    //Member Payment
+    MEMBERSHIP_PAYMENT_CREATED_SUCCESS(200, "Membership payment is created successfully"),
+    MEMBERSHIP_INSTALLMENT_PAYMENT_CREATED_SUCCESS(200, "Membership installment payment is created successfully"),
 
     // General Success
     LOGIN_IS_SUCCESS(200, "Login is successful");

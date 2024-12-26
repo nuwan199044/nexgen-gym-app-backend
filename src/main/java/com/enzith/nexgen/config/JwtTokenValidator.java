@@ -33,6 +33,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 throw new BadCredentialsException("Invalid Token", ex);
             }
         }
+        response.setHeader("Access-Control-Allow-Origin","*");
         filterChain.doFilter(request, response);
     }
 

@@ -1,10 +1,13 @@
 package com.enzith.nexgen.service.impl;
 
+import com.enzith.nexgen.criteria.PaginationCriteria;
 import com.enzith.nexgen.dto.request.MemberMembershipRequest;
+import com.enzith.nexgen.dto.response.MemberMembershipResponse;
 import com.enzith.nexgen.entity.Installment;
 import com.enzith.nexgen.entity.Member;
 import com.enzith.nexgen.entity.MemberMembership;
 import com.enzith.nexgen.entity.MembershipType;
+import com.enzith.nexgen.enums.MembershipStatus;
 import com.enzith.nexgen.enums.PaymentStatus;
 import com.enzith.nexgen.enums.ResponseCode;
 import com.enzith.nexgen.enums.Status;
@@ -14,13 +17,18 @@ import com.enzith.nexgen.repository.MemberMembershipRepository;
 import com.enzith.nexgen.repository.MemberRepository;
 import com.enzith.nexgen.repository.MembershipTypeRepository;
 import com.enzith.nexgen.service.MemberMembershipService;
+import com.enzith.nexgen.utility.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -32,6 +40,7 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
     private final MembershipTypeRepository membershipTypeRepository;
     private final MemberRepository memberRepository;
     private final InstallmentRepository installmentRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     @Transactional
@@ -65,6 +74,24 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
         return existingMember.getMembershipNo();
     }
 
+    @Override
+    public Map<String, Object> findAllMemberships(String firstName, String phoneNo, Integer currentPage, Integer pageSize) {
+        PaginationCriteria paginationCriteria = PaginationCriteria.builder()
+                .currentPage(currentPage)
+                .pageSize(pageSize)
+                .build();
+
+        Pageable pageable = PaginationUtils.getPage(paginationCriteria);
+
+        Page<MemberMembership> memberships = memberRepository
+                .findByFirstNameContainingIgnoreCaseOrPhoneNoContaining(firstName, phoneNo)
+                .map(member -> memberMembershipRepository.findByMemberAndStatusNot(member, MembershipStatus.INACTIVE, pageable))
+                .orElse(memberMembershipRepository.findAll(pageable));
+
+        return PaginationUtils.convertToPagination(memberships.map(membership ->
+                modelMapper.map(membership, MemberMembershipResponse.class)));
+    }
+
     private MembershipType validateMembershipType(Long membershipTypeId) {
         return membershipTypeRepository.findById(membershipTypeId)
                 .orElseThrow(() -> new MemberException(ResponseCode.MEMBERSHIP_TYPE_NOT_FOUND));
@@ -80,7 +107,7 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
                 .discount(memberMembershipRequest.getDiscount())
                 .netAmount(membershipType.getMembershipFee() - memberMembershipRequest.getDiscount())
                 .paymentStatus(PaymentStatus.UNPAID)
-                .status(Status.ACTIVE)
+                .status(MembershipStatus.ACTIVE)
                 .isPaidInInstallments(
                         membershipType.getIsInstallmentsAllowed() ? memberMembershipRequest.getIsPaidInInstallments() : false)
                 .installmentCount(memberMembershipRequest.getInstallmentCount())
@@ -122,7 +149,7 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
 
     private void deactivateMembershipAndInstallments(MemberMembership activeMembership, Member member) {
         if (PaymentStatus.UNPAID.equals(activeMembership.getPaymentStatus())) {
-            activeMembership.setStatus(Status.INACTIVE);
+            activeMembership.setStatus(MembershipStatus.INACTIVE);
             memberMembershipRepository.save(activeMembership);
 
             if (Boolean.TRUE.equals(activeMembership.getIsPaidInInstallments())) {

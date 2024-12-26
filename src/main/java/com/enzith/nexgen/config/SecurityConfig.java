@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,8 +28,8 @@ public class SecurityConfig {
         return httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/**").authenticated().anyRequest().permitAll())
                 .addFilterAfter(new JwtTokenValidator(), BasicAuthenticationFilter.class)
+                .cors(cors -> cors.configurationSource(getCorsConfigurationSource()) )
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(getCorsConfigurationSource()))
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .build();
@@ -39,7 +40,7 @@ public class SecurityConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration corsConfig = new CorsConfiguration();
-                corsConfig.setAllowedOrigins(List.of("http://localhost:3000"));
+                corsConfig.setAllowedOriginPatterns(Arrays.asList("*", "null"));
                 corsConfig.setAllowedHeaders(Collections.singletonList("*"));
                 corsConfig.setAllowedMethods(Collections.singletonList("*"));
                 corsConfig.setExposedHeaders(List.of("Authorization"));

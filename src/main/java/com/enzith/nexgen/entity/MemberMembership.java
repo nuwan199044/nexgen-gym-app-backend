@@ -1,7 +1,9 @@
 package com.enzith.nexgen.entity;
 
+import com.enzith.nexgen.enums.MembershipStatus;
 import com.enzith.nexgen.enums.PaymentStatus;
 import com.enzith.nexgen.enums.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,6 +40,7 @@ public class MemberMembership {
 
     @ManyToOne
     @JoinColumn(name = "member_id", referencedColumnName = "member_id")
+    @JsonBackReference
     private Member member;
 
     @ManyToOne
@@ -65,7 +68,7 @@ public class MemberMembership {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 11)
-    private Status status;
+    private MembershipStatus status;
 
     @Column(name = "is_paid_in_installments")
     private Boolean isPaidInInstallments;
