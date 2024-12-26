@@ -59,6 +59,7 @@ public enum ResponseCode {
     // Member Success
     MEMBER_CREATED_SUCCESS(200, "Member is created successfully"),
     MEMBER_UPDATED_SUCCESS(200, "Member is updated successfully"),
+    MEMBER_FIND_SUCCESS(200, "Member is fetched successfully"),
 
     // Trainer Success
     TRAINER_FIND_SUCCESS(200, "Trainer is fetched successfully"),

@@ -71,6 +71,11 @@ public class MemberServiceImpl implements MemberService {
         return PaginationUtils.convertToPagination(members.map(member -> modelMapper.map(member, MemberResponse.class)));
     }
 
+    @Override
+    public MemberResponse findMemberById(Long memberId) {
+        return modelMapper.map(memberRepository.findById(memberId), MemberResponse.class);
+    }
+
     private void validateUpdatedEmail(Member existingMember, String newEmail) {
         if (!existingMember.getEmail().equals(newEmail)) {
             validateMemberEmail(newEmail);

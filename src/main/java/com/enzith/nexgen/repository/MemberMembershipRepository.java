@@ -13,6 +13,6 @@ import java.util.Optional;
 
 public interface MemberMembershipRepository extends JpaRepository<MemberMembership, Long> {
     Optional<MemberMembership> findByMemberMembershipIdAndStatus(Long memberMembershipId, Status status);
-    Optional<MemberMembership> findByMemberMembershipIdAndMemberAndStatusAndPaymentStatus(Long memberMembershipId, Member member, Status status, PaymentStatus paymentStatus);
+    Optional<MemberMembership> findByMemberMembershipIdAndMemberAndStatusAndPaymentStatus(Long memberMembershipId, Member member, MembershipStatus status, PaymentStatus paymentStatus);
     Page<MemberMembership> findByMemberAndStatusNot(Member member, MembershipStatus status, Pageable pageable);
 }

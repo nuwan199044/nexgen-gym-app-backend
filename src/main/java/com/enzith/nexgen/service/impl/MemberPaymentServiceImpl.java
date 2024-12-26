@@ -6,6 +6,7 @@ import com.enzith.nexgen.entity.Installment;
 import com.enzith.nexgen.entity.Member;
 import com.enzith.nexgen.entity.MemberMembership;
 import com.enzith.nexgen.entity.MemberPayment;
+import com.enzith.nexgen.enums.MembershipStatus;
 import com.enzith.nexgen.enums.PaymentMode;
 import com.enzith.nexgen.enums.PaymentStatus;
 import com.enzith.nexgen.enums.PaymentType;
@@ -106,7 +107,7 @@ public class MemberPaymentServiceImpl implements MemberPaymentService {
                 .findByMemberMembershipIdAndMemberAndStatusAndPaymentStatus(
                         memberPaymentRequest.getMemberMembershipId(),
                         member,
-                        Status.ACTIVE,
+                        MembershipStatus.ACTIVE,
                         PaymentStatus.UNPAID)
                 .orElseThrow(() -> new MemberMembershipException(ResponseCode.MEMBER_MEMBERSHIP_NOT_FOUND));
     }
