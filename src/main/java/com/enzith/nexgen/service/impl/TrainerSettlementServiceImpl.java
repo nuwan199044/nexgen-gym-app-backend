@@ -1,5 +1,7 @@
 package com.enzith.nexgen.service.impl;
 
+import com.enzith.nexgen.criteria.PaginationCriteria;
+import com.enzith.nexgen.criteria.TrainerSettlementCriteria;
 import com.enzith.nexgen.dto.response.TrainerResponse;
 import com.enzith.nexgen.dto.response.TrainerSettlementDetailResponse;
 import com.enzith.nexgen.dto.response.TrainerSettlementResponse;
@@ -16,8 +18,12 @@ import com.enzith.nexgen.repository.TrainerRepository;
 import com.enzith.nexgen.repository.TrainerSettlementDetailRepository;
 import com.enzith.nexgen.repository.TrainerSettlementRepository;
 import com.enzith.nexgen.service.TrainerSettlementService;
+import com.enzith.nexgen.specification.TrainerSettlementSpecification;
+import com.enzith.nexgen.utility.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -46,6 +52,22 @@ public class TrainerSettlementServiceImpl implements TrainerSettlementService {
     @Override
     public TrainerSettlementResponse trainerSettlement(LocalDate fromDate, LocalDate toDate, Long trainerId) {
         return buildTrainerSettlementResponse(fromDate, toDate, trainerId, true);
+    }
+
+    @Override
+    public Map<String, Object> findAllSettlement(String firstName, Integer currentPage, Integer pageSize) {
+        TrainerSettlementCriteria criteria = TrainerSettlementCriteria.builder()
+                .firstName(firstName)
+                .build();
+
+        PaginationCriteria paginationCriteria = PaginationCriteria.builder()
+                .currentPage(currentPage)
+                .pageSize(pageSize)
+                .build();
+
+        Pageable pageable = PaginationUtils.getPage(paginationCriteria);
+        Page<TrainerSettlement> settlements = trainerSettlementRepository.findAll(new TrainerSettlementSpecification(criteria), pageable);
+        return PaginationUtils.convertToPagination(settlements.map(settlement -> modelMapper.map(settlement, TrainerSettlementResponse.class)));
     }
 
     private TrainerSettlementResponse buildTrainerSettlementResponse(
