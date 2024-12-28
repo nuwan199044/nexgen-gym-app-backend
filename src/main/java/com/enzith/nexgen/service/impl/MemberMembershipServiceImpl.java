@@ -128,6 +128,15 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
                 modelMapper.map(membership, MemberMembershipResponse.class)));
     }
 
+    @Override
+    public void expireMembership() {
+        List<MemberMembership> membershipsToExpire = memberMembershipRepository.findMembershipsToExpire(LocalDate.now(), MembershipStatus.ACTIVE);
+        membershipsToExpire.forEach(memberMembership -> memberMembership.setStatus(MembershipStatus.EXPIRED));
+        if (!membershipsToExpire.isEmpty()) {
+            memberMembershipRepository.saveAll(membershipsToExpire);
+        }
+    }
+
     private MembershipType validateMembershipType(Long membershipTypeId) {
         return membershipTypeRepository.findById(membershipTypeId)
                 .orElseThrow(() -> new MemberException(ResponseCode.MEMBERSHIP_TYPE_NOT_FOUND));

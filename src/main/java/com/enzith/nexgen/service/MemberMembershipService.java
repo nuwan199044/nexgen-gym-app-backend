@@ -14,5 +14,6 @@ public interface MemberMembershipService {
     MemberMembershipResponse findMembershipById(Long membershipId);
     MemberMembershipResponse findMembershipForRenewal(Long membershipId);
     Map<String, Object> findAllMemberships(String firstName, String phoneNo, Integer currentPage, Integer pageSize);
+    void expireMembership();
 
 }

@@ -8,6 +8,7 @@ import com.enzith.nexgen.enums.ResponseCode;
 import com.enzith.nexgen.service.MemberPaymentService;
 import com.enzith.nexgen.utility.APIResponseUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +24,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/member-payment")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberPaymentController {
 
     private final MemberPaymentService memberPaymentService;
 
     @PostMapping
     public ResponseEntity<APIResponse<MemberPaymentResponse>> createMembershipPayment(@RequestBody MemberPaymentRequest memberPaymentRequest) {
+        log.info("Received request to create membership payment for member ID: {}", memberPaymentRequest.getMemberId());
         return new ResponseEntity<>(
                 APIResponseUtil.createResponse(
                         ResponseCode.MEMBERSHIP_PAYMENT_CREATED_SUCCESS,
@@ -38,6 +41,7 @@ public class MemberPaymentController {
 
     @PostMapping("/installment")
     public ResponseEntity<APIResponse<MemberPaymentResponse>> createMembershipInstallmentPayment(@RequestBody MemberPaymentRequest memberPaymentRequest) {
+        log.info("Received request to create membership installment payment for member ID: {}", memberPaymentRequest.getMemberId());
         return new ResponseEntity<>(
                 APIResponseUtil.createResponse(
                         ResponseCode.MEMBERSHIP_INSTALLMENT_PAYMENT_CREATED_SUCCESS,
@@ -48,6 +52,7 @@ public class MemberPaymentController {
     @GetMapping("/installment")
     public ResponseEntity<List<InstallmentResponse>> findAllMembershipPaymentInstallments(
             @RequestParam(value = "member_membership_id") Long memberMembershipId) {
+        log.info("Received request to fetch all installments for membership ID: {}", memberMembershipId);
         return new ResponseEntity<>(memberPaymentService.findAllMembershipPaymentInstallments(memberMembershipId), HttpStatus.OK);
     }
 
@@ -57,6 +62,8 @@ public class MemberPaymentController {
             @RequestParam(value = "phone_no", required = false) String phoneNo,
             @RequestParam(value = "current_page") Integer currentPage,
             @RequestParam(value = "page_size") Integer pageSize) {
+        log.info("Received request to fetch all member payments with filters - First Name: {}, Phone No: {}, Current Page: {}, Page Size: {}",
+                firstName, phoneNo, currentPage, pageSize);
         return new ResponseEntity<>(memberPaymentService.findAllMemberPayments(firstName, phoneNo, currentPage, pageSize), HttpStatus.OK);
     }
 

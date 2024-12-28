@@ -40,6 +40,7 @@ public enum ResponseCode {
 
     //Installment Errors
     INSTALLMENT_NOT_FOUND(400, "Installment not found"),
+    INSTALLMENT_ALREADY_PAID(400, "Installment already paid"),
 
     // Package Errors
     TRAINER_PACKAGE_NOT_FOUND(400, "Trainer package not found"),

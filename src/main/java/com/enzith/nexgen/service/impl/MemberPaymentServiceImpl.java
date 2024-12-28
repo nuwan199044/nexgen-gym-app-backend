@@ -47,29 +47,40 @@ public class MemberPaymentServiceImpl implements MemberPaymentService {
 
     @Override
     public MemberPaymentResponse createMembershipPayment(MemberPaymentRequest memberPaymentRequest) {
+        log.info("Creating membership payment for member ID: {}", memberPaymentRequest.getMemberId());
         Member member = validateMember(memberPaymentRequest);
         MemberMembership memberMembership = validateMemberMembership(memberPaymentRequest, member);
 
+        log.info("Saving payment for member membership ID: {}", memberPaymentRequest.getMemberMembershipId());
         MemberPayment memberPayment = memberPaymentRepository.save(mapMemberMembership(memberMembership));
-        memberMembership.setPaymentStatus(PaymentStatus.PAID);
 
+        memberMembership.setPaymentStatus(PaymentStatus.PAID);
+        log.info("Updating payment status for membership ID: {}", memberPaymentRequest.getMemberMembershipId());
         memberMembershipRepository.save(memberMembership);
+
+        log.info("Payment created successfully for member ID: {}", memberPaymentRequest.getMemberId());
         return modelMapper.map(memberPayment, MemberPaymentResponse.class);
     }
 
     @Override
     public MemberPaymentResponse createMembershipInstallmentPayment(MemberPaymentRequest memberPaymentRequest) {
+        log.info("Creating membership installment payment for member ID: {}", memberPaymentRequest.getMemberId());
         Member member = validateMember(memberPaymentRequest);
         MemberMembership memberMembership = validateMemberMembership(memberPaymentRequest, member);
         Installment installment = validateInstallment(memberPaymentRequest);
+        validateInstallmentPaymentStatus(installment);
         installment.setPaymentStatus(PaymentStatus.PAID);
-        MemberPayment memberPayment = memberPaymentRepository.save(mapInstallment(memberMembership, installment));
-        memberMembership.setPaymentStatus(PaymentStatus.PAID);
+        log.info("Saving installment payment for installment ID: {}", memberPaymentRequest.getInstallmentId());
         installmentRepository.save(installment);
 
-//        installmentRepository.findByMemberAndMemberMembership()
+        MemberPayment memberPayment = memberPaymentRepository.save(mapInstallment(memberMembership, installment));
 
-        memberMembershipRepository.save(memberMembership);
+        if (areAllInstallmentsPaid(memberMembership)) {
+            log.info("All installments paid, updating membership payment status for membership ID: {}", memberMembership.getMemberMembershipId());
+            markMembershipAsPaid(memberMembership);
+        }
+
+        log.info("Installment payment created successfully for member ID: {}", memberPaymentRequest.getMemberId());
         return modelMapper.map(memberPayment, MemberPaymentResponse.class);
     }
 
@@ -80,6 +91,9 @@ public class MemberPaymentServiceImpl implements MemberPaymentService {
 
     @Override
     public Map<String, Object> findAllMemberPayments(String firstName, String phoneNo, Integer currentPage, Integer pageSize) {
+        log.info("Fetching all member payments with filters - First Name: {}, Phone No: {}, Current Page: {}, Page Size: {}",
+                firstName, phoneNo, currentPage, pageSize);
+
         MemberPaymentCriteria criteria = MemberPaymentCriteria.builder()
                 .firstName(firstName)
                 .phoneNo(phoneNo)
@@ -92,6 +106,8 @@ public class MemberPaymentServiceImpl implements MemberPaymentService {
 
         Pageable pageable = PaginationUtils.getPage(paginationCriteria);
         Page<MemberPayment> memberPayments = memberPaymentRepository.findAll(new MemberPaymentSpecification(criteria), pageable);
+
+        log.info("Fetched {} member payments for the given filters.", memberPayments.getTotalElements());
         return PaginationUtils.convertToPagination(memberPayments.map(memberPayment -> modelMapper.map(memberPayment, MemberPaymentResponse.class)));
     }
 
@@ -102,6 +118,18 @@ public class MemberPaymentServiceImpl implements MemberPaymentService {
                 .stream()
                 .map(installment -> modelMapper.map(installment, InstallmentResponse.class))
                 .toList();
+    }
+
+    private boolean areAllInstallmentsPaid(MemberMembership memberMembership) {
+        return installmentRepository.findByMemberMembership(memberMembership)
+                .stream()
+                .allMatch(installment -> installment.getPaymentStatus().equals(PaymentStatus.PAID));
+    }
+
+    private void markMembershipAsPaid(MemberMembership memberMembership) {
+        log.info("Marking membership ID: {} as paid", memberMembership.getMemberMembershipId());
+        memberMembership.setPaymentStatus(PaymentStatus.PAID);
+        memberMembershipRepository.save(memberMembership);
     }
 
     private MemberPayment mapMemberMembership(MemberMembership memberMembership) {
@@ -127,16 +155,26 @@ public class MemberPaymentServiceImpl implements MemberPaymentService {
     }
 
     private Member validateMember(MemberPaymentRequest memberPaymentRequest) {
+        log.info("Validating member with ID: {}", memberPaymentRequest.getMemberId());
         return memberRepository.findById(memberPaymentRequest.getMemberId())
                 .orElseThrow(() -> new MemberException(ResponseCode.MEMBER_NOT_FOUND));
     }
 
     private Installment validateInstallment(MemberPaymentRequest memberPaymentRequest) {
+        log.info("Validating installment with ID: {}", memberPaymentRequest.getInstallmentId());
         return installmentRepository.findById(memberPaymentRequest.getInstallmentId())
                 .orElseThrow(() -> new MemberException(ResponseCode.INSTALLMENT_NOT_FOUND));
     }
 
+    private void validateInstallmentPaymentStatus(Installment installment) {
+        log.info("Validating installment status: {}", installment.getPaymentStatus());
+        if (installment.getPaymentStatus().equals(PaymentStatus.PAID)) {
+            throw new MemberException(ResponseCode.INSTALLMENT_ALREADY_PAID);
+        }
+    }
+
     private MemberMembership validateMemberMembership(MemberPaymentRequest memberPaymentRequest, Member member) {
+        log.info("Validating member membership with ID: {} for member ID: {}", memberPaymentRequest.getMemberMembershipId(), member.getMemberId());
         return memberMembershipRepository
                 .findByMemberMembershipIdAndMemberAndStatusAndPaymentStatus(
                         memberPaymentRequest.getMemberMembershipId(),
@@ -147,6 +185,7 @@ public class MemberPaymentServiceImpl implements MemberPaymentService {
     }
 
     private MemberMembership validateMembership(Long membershipId) {
+        log.info("Validating membership with ID: {}", membershipId);
         return memberMembershipRepository.findById(membershipId)
                 .orElseThrow(() -> new MemberException(ResponseCode.MEMBERSHIP_NOT_FOUND));
     }
