@@ -1,5 +1,6 @@
 package com.enzith.nexgen.service.impl;
 
+import com.enzith.nexgen.common.AppConstants;
 import com.enzith.nexgen.criteria.PaginationCriteria;
 import com.enzith.nexgen.dto.request.MemberMembershipRequest;
 import com.enzith.nexgen.dto.response.InstallmentResponse;
@@ -8,7 +9,10 @@ import com.enzith.nexgen.entity.Installment;
 import com.enzith.nexgen.entity.Member;
 import com.enzith.nexgen.entity.MemberMembership;
 import com.enzith.nexgen.entity.MembershipType;
+import com.enzith.nexgen.entity.Notification;
 import com.enzith.nexgen.enums.MembershipStatus;
+import com.enzith.nexgen.enums.NotificationStatus;
+import com.enzith.nexgen.enums.NotificationType;
 import com.enzith.nexgen.enums.PaymentStatus;
 import com.enzith.nexgen.enums.ResponseCode;
 import com.enzith.nexgen.enums.Status;
@@ -17,6 +21,7 @@ import com.enzith.nexgen.repository.InstallmentRepository;
 import com.enzith.nexgen.repository.MemberMembershipRepository;
 import com.enzith.nexgen.repository.MemberRepository;
 import com.enzith.nexgen.repository.MembershipTypeRepository;
+import com.enzith.nexgen.repository.NotificationRepository;
 import com.enzith.nexgen.service.MemberMembershipService;
 import com.enzith.nexgen.utility.PaginationUtils;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +47,7 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
     private final MembershipTypeRepository membershipTypeRepository;
     private final MemberRepository memberRepository;
     private final InstallmentRepository installmentRepository;
+    private final NotificationRepository notificationRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -135,6 +141,10 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
         if (!membershipsToExpire.isEmpty()) {
             memberMembershipRepository.saveAll(membershipsToExpire);
         }
+        List<Notification> notifications = membershipsToExpire.stream()
+                .map(this::getNotificationForExpiredMembership)
+                .toList();
+        notificationRepository.saveAll(notifications);
     }
 
     private MembershipType validateMembershipType(Long membershipTypeId) {
@@ -241,5 +251,16 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
     private void createInstallments(Member member, MemberMembership memberMembership) {
         List<Installment> installments = generateInstallments(member, memberMembership);
         installmentRepository.saveAll(installments);
+    }
+
+    private Notification getNotificationForExpiredMembership(MemberMembership membership) {
+        return Notification.builder()
+                .type(NotificationType.MEMBER_EXPIRATION)
+                .message(String.format(AppConstants.MEMBER_EXPIRATION_NOTIFICATION_MESSAGE,
+                        membership.getMember().getFirstName()+" "+membership.getMember().getLastName(),
+                        membership.getMember().getMembershipNo())
+                )
+                .status(NotificationStatus.NEW)
+                .build();
     }
 }

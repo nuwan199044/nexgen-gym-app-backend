@@ -14,4 +14,8 @@ public class AppConstants {
     public static final String ISSUED_AT = "iat";
     public static final String EXPIRATION = "exp";
     public static final String TOKEN_TYPE = "Bearer";
+
+    //Notification messages
+    public static final String MEMBER_EXPIRATION_NOTIFICATION_MESSAGE = "The membership for %s(%s) has expired. " +
+            "Please take necessary action to ensure the member is notified about their expired membership and offer assistance for renewal if required.";
 }

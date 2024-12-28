@@ -91,7 +91,13 @@ public enum ResponseCode {
     MEMBERSHIP_INSTALLMENT_PAYMENT_CREATED_SUCCESS(200, "Membership installment payment is created successfully"),
 
     // General Success
-    LOGIN_IS_SUCCESS(200, "Login is successful");
+    LOGIN_IS_SUCCESS(200, "Login is successful"),
+
+    //Notification Error
+    NOTIFICATION_NOT_FOUND(500, "Notification not found"),
+
+    //Notification Success
+    NOTIFICATION_SEEN_SUCCESS(200, "Notification seen successfully");
 
     private final int code;
     private final String message;

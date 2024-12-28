@@ -6,6 +6,7 @@ import com.enzith.nexgen.exception.MemberException;
 import com.enzith.nexgen.exception.MemberMembershipException;
 import com.enzith.nexgen.exception.MemberTrainerSessionException;
 import com.enzith.nexgen.exception.MembershipTypeException;
+import com.enzith.nexgen.exception.NotificationException;
 import com.enzith.nexgen.exception.PersonalTrainingException;
 import com.enzith.nexgen.exception.TrainerException;
 import com.enzith.nexgen.exception.TrainerPackageException;
@@ -119,6 +120,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {MemberMembershipException.class})
     public ResponseEntity<Object> handleMemberMembershipException(MemberMembershipException ex, WebRequest request) {
+        log.error(ex.getMessage(), ex);
+        return handleExceptionInternal(
+                ex,
+                getErrorDetailResponse(ex.getError(), request, null),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    @ExceptionHandler(value = {NotificationException.class})
+    public ResponseEntity<Object> handleNotificationException(NotificationException ex, WebRequest request) {
         log.error(ex.getMessage(), ex);
         return handleExceptionInternal(
                 ex,
