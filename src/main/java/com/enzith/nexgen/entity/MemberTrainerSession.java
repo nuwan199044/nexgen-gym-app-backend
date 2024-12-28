@@ -1,6 +1,7 @@
 package com.enzith.nexgen.entity;
 
 import com.enzith.nexgen.enums.PaymentStatus;
+import com.enzith.nexgen.enums.SettlementStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -64,7 +65,11 @@ public class MemberTrainerSession {
     private Double discount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "payment_status", length = 6)
+    @Column(name = "payment_status")
     private PaymentStatus paymentStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "settlement_status")
+    private SettlementStatus settlementStatus;
 
 }

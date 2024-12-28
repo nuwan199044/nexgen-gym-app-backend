@@ -70,6 +70,9 @@ public class Trainer {
     @Column(name = "created_by", length = 45)
     private String createdBy;
 
+    @Column(name = "is_basic_pay")
+    private Boolean isBasicPay;
+
     @PrePersist
     private void generateTrainerNo() {
         if (trainerNo == null) {

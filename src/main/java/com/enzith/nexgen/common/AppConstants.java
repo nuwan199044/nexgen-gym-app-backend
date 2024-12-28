@@ -21,4 +21,7 @@ public class AppConstants {
 
     public static final String MEMBER_PENDING_EXPIRATION_NOTIFICATION_MESSAGE =
             "Membership for %s (%s) will expire in 5 days. Notify the member and assist with renewal.";
+
+    public static final String SINGLE_SESSIONS = "SINGLE SESSIONS";
+    public static final String OTHER_SESSIONS = "OTHER SESSIONS";
 }
