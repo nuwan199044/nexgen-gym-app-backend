@@ -2,7 +2,6 @@ package com.enzith.nexgen.controller;
 
 import com.enzith.nexgen.dto.response.APIResponse;
 import com.enzith.nexgen.dto.request.MemberMembershipRequest;
-import com.enzith.nexgen.dto.response.InstallmentResponse;
 import com.enzith.nexgen.dto.response.MemberMembershipResponse;
 import com.enzith.nexgen.enums.ResponseCode;
 import com.enzith.nexgen.service.MemberMembershipService;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -62,12 +60,6 @@ public class MemberMembershipController {
             @RequestParam(value = "current_page") Integer currentPage,
             @RequestParam(value = "page_size") Integer pageSize) {
         return new ResponseEntity<>(memberMembershipService.findAllMemberships(firstName, phoneNo, currentPage, pageSize), HttpStatus.OK);
-    }
-
-    @GetMapping("/payment/installment")
-    public ResponseEntity<List<InstallmentResponse>> findAllMembershipPaymentInstallments(
-            @RequestParam(value = "member_membership_id") Long memberMembershipId) {
-        return new ResponseEntity<>(memberMembershipService.findAllMembershipPaymentInstallments(memberMembershipId), HttpStatus.OK);
     }
 
     @GetMapping("/find-by-id")

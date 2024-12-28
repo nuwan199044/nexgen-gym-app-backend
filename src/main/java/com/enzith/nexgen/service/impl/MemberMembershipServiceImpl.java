@@ -128,23 +128,9 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
                 modelMapper.map(membership, MemberMembershipResponse.class)));
     }
 
-    @Override
-    public List<InstallmentResponse> findAllMembershipPaymentInstallments(Long memberMembershipId) {
-        MemberMembership memberMembership = validateMembership(memberMembershipId);
-        return installmentRepository.findByMemberMembership(memberMembership)
-                .stream()
-                .map(installment -> modelMapper.map(installment, InstallmentResponse.class))
-                .toList();
-    }
-
     private MembershipType validateMembershipType(Long membershipTypeId) {
         return membershipTypeRepository.findById(membershipTypeId)
                 .orElseThrow(() -> new MemberException(ResponseCode.MEMBERSHIP_TYPE_NOT_FOUND));
-    }
-
-    private MemberMembership validateMembership(Long membershipId) {
-        return memberMembershipRepository.findById(membershipId)
-                .orElseThrow(() -> new MemberException(ResponseCode.MEMBERSHIP_NOT_FOUND));
     }
 
     private MemberMembership getMemberMembership(Member existingMember, MemberMembershipRequest memberMembershipRequest, MembershipType membershipType) {
