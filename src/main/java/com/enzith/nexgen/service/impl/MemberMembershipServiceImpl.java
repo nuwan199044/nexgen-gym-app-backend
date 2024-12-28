@@ -37,6 +37,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
+
+import static com.enzith.nexgen.common.AppConstants.MEMBER_EXPIRATION_NOTIFICATION_MESSAGE;
+import static com.enzith.nexgen.common.AppConstants.MEMBER_PENDING_EXPIRATION_NOTIFICATION_MESSAGE;
 
 @Service
 @Slf4j
@@ -136,16 +140,31 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
 
     @Override
     public void expireMembership() {
-        List<MemberMembership> membershipsToExpire = memberMembershipRepository.findMembershipsToExpire(LocalDate.now(), MembershipStatus.ACTIVE);
-        membershipsToExpire.forEach(memberMembership -> memberMembership.setStatus(MembershipStatus.EXPIRED));
-        if (!membershipsToExpire.isEmpty()) {
-            memberMembershipRepository.saveAll(membershipsToExpire);
-        }
-        List<Notification> notifications = membershipsToExpire.stream()
-                .map(this::getNotificationForExpiredMembership)
+        List<MemberMembership> expiredMemberships = updateMembershipStatus(LocalDate.now());
+        List<MemberMembership> membershipsToExpireSoon = updateMembershipStatus(LocalDate.now().plusDays(5));
+
+        List<Notification> expiredNotifications = expiredMemberships.stream()
+                .map(memberMembership -> getNotificationForExpiredMembership(memberMembership, MEMBER_EXPIRATION_NOTIFICATION_MESSAGE))
                 .toList();
-        notificationRepository.saveAll(notifications);
+
+        List<Notification> expiringSoonNotifications = membershipsToExpireSoon.stream()
+                .map(memberMembership -> getNotificationForExpiredMembership(memberMembership, MEMBER_PENDING_EXPIRATION_NOTIFICATION_MESSAGE))
+                .toList();
+
+        List<Notification> allNotifications = Stream.concat(expiredNotifications.stream(), expiringSoonNotifications.stream()).toList();
+        notificationRepository.saveAll(allNotifications);
     }
+
+    private List<MemberMembership> updateMembershipStatus(LocalDate targetDate) {
+        List<MemberMembership> memberships = memberMembershipRepository.findMembershipsToExpire(targetDate, MembershipStatus.ACTIVE);
+
+        if (!memberships.isEmpty()) {
+            memberships.forEach(memberMembership -> memberMembership.setStatus(MembershipStatus.EXPIRED));
+            memberMembershipRepository.saveAll(memberships);
+        }
+        return memberships;
+    }
+
 
     private MembershipType validateMembershipType(Long membershipTypeId) {
         return membershipTypeRepository.findById(membershipTypeId)
@@ -253,10 +272,10 @@ public class MemberMembershipServiceImpl implements MemberMembershipService {
         installmentRepository.saveAll(installments);
     }
 
-    private Notification getNotificationForExpiredMembership(MemberMembership membership) {
+    private Notification getNotificationForExpiredMembership(MemberMembership membership, String message) {
         return Notification.builder()
                 .type(NotificationType.MEMBER_EXPIRATION)
-                .message(String.format(AppConstants.MEMBER_EXPIRATION_NOTIFICATION_MESSAGE,
+                .message(String.format(message,
                         membership.getMember().getFirstName()+" "+membership.getMember().getLastName(),
                         membership.getMember().getMembershipNo())
                 )

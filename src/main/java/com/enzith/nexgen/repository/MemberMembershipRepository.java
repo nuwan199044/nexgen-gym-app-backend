@@ -20,6 +20,6 @@ public interface MemberMembershipRepository extends JpaRepository<MemberMembersh
     Optional<MemberMembership> findByMemberMembershipIdAndMemberAndStatusAndPaymentStatus(Long memberMembershipId, Member member, MembershipStatus status, PaymentStatus paymentStatus);
     Page<MemberMembership> findByMemberAndStatusNot(Member member, MembershipStatus status, Pageable pageable);
 
-    @Query("SELECT mm FROM MemberMembership mm WHERE mm.endDate <= :currentDate AND mm.status = :status")
+    @Query("SELECT mm FROM MemberMembership mm WHERE mm.endDate < :currentDate AND mm.status = :status")
     List<MemberMembership> findMembershipsToExpire(@Param("currentDate") LocalDate currentDate, @Param("status") MembershipStatus membershipStatus);
 }

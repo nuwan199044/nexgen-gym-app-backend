@@ -16,6 +16,9 @@ public class AppConstants {
     public static final String TOKEN_TYPE = "Bearer";
 
     //Notification messages
-    public static final String MEMBER_EXPIRATION_NOTIFICATION_MESSAGE = "The membership for %s(%s) has expired. " +
-            "Please take necessary action to ensure the member is notified about their expired membership and offer assistance for renewal if required.";
+    public static final String MEMBER_EXPIRATION_NOTIFICATION_MESSAGE =
+            "Membership for %s (%s) has expired. Notify the member and assist with renewal.";
+
+    public static final String MEMBER_PENDING_EXPIRATION_NOTIFICATION_MESSAGE =
+            "Membership for %s (%s) will expire in 5 days. Notify the member and assist with renewal.";
 }
